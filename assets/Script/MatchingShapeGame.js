@@ -15,6 +15,10 @@ cc.Class({
             default: null,
             type: cc.AudioClip
         },
+        lineTo: {
+            default: null,
+            type: cc.Node
+        },
 
         btnImage1:{
             default: null,
@@ -100,7 +104,7 @@ cc.Class({
     },
 
     start(){
-        
+
     },
 
     onClickBtn1(){
@@ -108,7 +112,7 @@ cc.Class({
         cc.audioEngine.play(this.clickSound, false, 1);
         if(this._onclickBtn1 === true){
             cc.find("Canvas/MatchingShapeGame/Btn1").scale = 1.1;
-            this.brush1.getComponent('Brush').setBrushPos(-250, 200);
+            this.brush1.getComponent('Brush').setBrushPos(this.btnImage1.node.x, this.btnImage1.node.y);
         }else{
             cc.find("Canvas/MatchingShapeGame/Btn1").scale = 1;
             this._isHaveConnect1 = false;
@@ -122,7 +126,7 @@ cc.Class({
         cc.audioEngine.play(this.clickSound, false, 1);
         if(this._onclickBtn2 === true){
             cc.find("Canvas/MatchingShapeGame/Btn2").scale = 1.1;
-            this.brush2.getComponent('Brush').setBrushPos(-250, 0);
+            this.brush2.getComponent('Brush').setBrushPos(this.btnImage2.node.x, this.btnImage2.node.y);
         }else{
             cc.find("Canvas/MatchingShapeGame/Btn2").scale = 1;
             this._isHaveConnect2 = false;
@@ -136,7 +140,7 @@ cc.Class({
         cc.audioEngine.play(this.clickSound, false, 1);
         if(this._onclickBtn3 === true){
             cc.find("Canvas/MatchingShapeGame/Btn3").scale = 1.1;
-            this.brush3.getComponent('Brush').setBrushPos(-250, -200);
+            this.brush3.getComponent('Brush').setBrushPos(this.btnImage3.node.x, this.btnImage3.node.y);
         }else{
             cc.find("Canvas/MatchingShapeGame/Btn3").scale = 1;
             this._isHaveConnect3 = false;
@@ -157,7 +161,7 @@ cc.Class({
             this._numberConnect4 = 1;
             this._numberConnect1 = 4;
             cc.find("Canvas/MatchingShapeGame/Btn4").scale = 1.1
-            this.brush1.getComponent('Brush').drawTo(250, 200);
+            this.brush1.getComponent('Brush').drawTo(this.btnImage4.node.x, this.btnImage4.node.y);
             this.brush1.getComponent('Brush').close();
             this._isHaveConnect1 = true;
         }
@@ -165,7 +169,7 @@ cc.Class({
             this._numberConnect4 = 2;
             this._numberConnect2 = 4;
             cc.find("Canvas/MatchingShapeGame/Btn4").scale = 1.1
-            this.brush2.getComponent('Brush').drawTo(250, 200);
+            this.brush2.getComponent('Brush').drawTo(this.btnImage4.node.x, this.btnImage4.node.y);
             this.brush2.getComponent('Brush').close();
             this._isHaveConnect2 = true;
         }
@@ -173,7 +177,7 @@ cc.Class({
             this._numberConnect4 = 3;
             this._numberConnect3 = 4;
             cc.find("Canvas/MatchingShapeGame/Btn4").scale = 1.1
-            this.brush3.getComponent('Brush').drawTo(250, 200);
+            this.brush3.getComponent('Brush').drawTo(this.btnImage4.node.x, this.btnImage4.node.y);
             this.brush3.getComponent('Brush').close();
             this._isHaveConnect3 = true;
         }
@@ -191,7 +195,7 @@ cc.Class({
             this._numberConnect5 = 1;
             this._numberConnect1 = 5;
             cc.find("Canvas/MatchingShapeGame/Btn5").scale = 1.1;
-            this.brush1.getComponent('Brush').drawTo(250, 0);
+            this.brush1.getComponent('Brush').drawTo(this.btnImage5.node.x, this.btnImage5.node.y);
             this.brush1.getComponent('Brush').close();
             this._isHaveConnect1 = true;
         }
@@ -199,7 +203,7 @@ cc.Class({
             this._numberConnect5 = 2;
             this._numberConnect2 = 5;
             cc.find("Canvas/MatchingShapeGame/Btn5").scale = 1.1;
-            this.brush2.getComponent('Brush').drawTo(250, 0);
+            this.brush2.getComponent('Brush').drawTo(this.btnImage5.node.x, this.btnImage5.node.y);
             this.brush2.getComponent('Brush').close();
             this._isHaveConnect2 = true;
         }
@@ -207,7 +211,7 @@ cc.Class({
             this._numberConnect5 = 3;
             this._numberConnect3 = 5;
             cc.find("Canvas/MatchingShapeGame/Btn5").scale = 1.1;
-            this.brush3.getComponent('Brush').drawTo(250, -0);
+            this.brush3.getComponent('Brush').drawTo(this.btnImage5.node.x, this.btnImage5.node.y);
             this.brush3.getComponent('Brush').close();
             this._isHaveConnect3 = true;
         }
@@ -225,7 +229,7 @@ cc.Class({
             this._numberConnect6 = 1;
             this._numberConnect1 = 6;
             cc.find("Canvas/MatchingShapeGame/Btn6").scale = 1.1;
-            this.brush1.getComponent('Brush').drawTo(250, -200);
+            this.brush1.getComponent('Brush').drawTo(this.btnImage6.node.x, this.btnImage6.node.y);
             this.brush1.getComponent('Brush').close();
             this._isHaveConnect1 = true;
         }
@@ -233,7 +237,7 @@ cc.Class({
             this._numberConnect6 = 2;
             this._numberConnect2 = 6;
             cc.find("Canvas/MatchingShapeGame/Btn6").scale = 1.1;
-            this.brush2.getComponent('Brush').drawTo(250, -200);
+            this.brush2.getComponent('Brush').drawTo(this.btnImage6.node.x, this.btnImage6.node.y);
             this.brush2.getComponent('Brush').close();
             this._isHaveConnect2 = true;
         }
@@ -241,7 +245,7 @@ cc.Class({
             this._numberConnect6 = 3;
             this._numberConnect3 = 6;
             cc.find("Canvas/MatchingShapeGame/Btn6").scale = 1.1;
-            this.brush3.getComponent('Brush').drawTo(250, -200);
+            this.brush3.getComponent('Brush').drawTo(this.btnImage6.node.x, this.btnImage6.node.y);
             this.brush3.getComponent('Brush').close();
             this._isHaveConnect3 = true;
         }
@@ -312,47 +316,30 @@ cc.Class({
     //     this._index++;
     // },
 
-    // handleConnect(){
-    //     if(window.amountNodeIsTouched === 3){
-    //         window.amountNodeIsTouched = 0;
-    //     }
-    //     if(this.arrObjectPrefab[0].getComponent('Object')._isTouch === true){
-    //         this._isHaveConnect = true;
-    //         this.brush1.getComponent('Brush').setBrushPos(-200, 200);
-    //     }
-    //     if(this.arrObjectPrefab[1].getComponent('Object')._isTouch === true){
-    //         this._isHaveConnect = true;
-    //         this.brush2.getComponent('Brush').setBrushPos(-200, 0);
-    //     }   
-    //     if(this.arrObjectPrefab[2].getComponent('Object')._isTouch === true){
-    //         this._isHaveConnect = true;
-    //         this.brush3.getComponent('Brush').setBrushPos(-200, -200);
-    //     }
-
-    //     if(this.arrObjectPrefab[3].getComponent('Object')._isTouch === true && this._isHaveConnect === true){
-    //         if(this.arrObjectPrefab[3].getComponent('Object')._isConnect === false){
-    //             this.brush1.getComponent('Brush').drawTo(200, 200);
-    //             this.brush1.getComponent('Brush').close();
-    //             this.arrObjectPrefab[3].getComponent('Object')._isConnect = true;
-    //         }
-    //     }
-    //     if(this.arrObjectPrefab[4].getComponent('Object')._isTouch === true && this._isHaveConnect === true){
-    //         if(this.arrObjectPrefab[4].getComponent('Object')._isConnect === false){
-    //             this.brush2.getComponent('Brush').drawTo(200, 0);
-    //             this.brush2.getComponent('Brush').close();
-    //             this.arrObjectPrefab[4].getComponent('Object')._isConnect = true;
-    //         }
-    //     }
-    //     if(this.arrObjectPrefab[5].getComponent('Object')._isTouch === true && this._isHaveConnect === true){
-    //         if(this.arrObjectPrefab[5].getComponent('Object')._isConnect === false){
-    //             this.brush3.getComponent('Brush').drawTo(200, -200);
-    //             this.brush3.getComponent('Brush').close();
-    //             this.arrObjectPrefab[5].getComponent('Object')._isConnect = true;
-    //         }
-    //     }
-    // },
+    calculateTheLengthAndAngle(x, y){
+        this.lineTo.setPosition(x, y);
+        let chieuX = Math.abs(window.posX - x);
+        let chieuY = Math.abs(window.posY - y);
+        let khoangCach = Math.sqrt((chieuX * chieuX) + (chieuY * chieuY));
+        var theta = Math.atan2(chieuY, chieuX) * 180 / Math.PI;
+        if(window.posX < x && window.posY >= y){
+            let goccong = 90 - theta;
+            theta += goccong * 2;
+        }
+        if(window.posY < y){
+            theta -= theta * 2;
+        }
+        if(window.posX <= x && window.posY <= y){
+            let goccong = (theta + 90) * (-1);
+            theta += goccong * 2;
+        } 
+        this.lineTo.angle = theta;
+        this.lineTo.width = khoangCach;
+        // console.log("Goc: " + theta);
+    },
 
     update (dt) {
+        this.calculateTheLengthAndAngle(0, 0);
         // this.handleConnect();
     },
 });

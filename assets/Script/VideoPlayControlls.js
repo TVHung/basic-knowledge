@@ -7,7 +7,7 @@ cc.Class({
     },
 
     start () {
-        this.videoPlayer.play();
+        // this.videoPlayer.play();
     },
 
     onVideoPlayerEvent (sender, event) {

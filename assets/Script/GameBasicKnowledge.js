@@ -12,8 +12,13 @@ cc.Class({
     },
 
     onLoad () {
+        window.width = 1280;
+        window.height = 720;
+        window.posX = 0;
+        window.posY = 0;
         // cc.director.getCollisionManager().enabledDebugDraw = true;
         cc.debug.setDisplayStats(false);
+        this.initEventListener();
         this.hideShowGame();
     },
 
@@ -50,6 +55,19 @@ cc.Class({
         }else{
             cc.find("Canvas/PreGame").active = true;
         }
+    },
+
+    initEventListener() {  
+        this.node.on(cc.Node.EventType.TOUCH_START, (event)=>{  
+
+        },this);
+
+        this.node.on(cc.Node.EventType.TOUCH_MOVE, (event)=>{  
+            let pos = event.getLocation();
+            window.posX = pos.x - window.width/2;
+            window.posY = pos.y - window.height/2;
+            // console.log(window.posX + ": " + window.posY);
+        },this);
     },
 
     onClickSkip(){
