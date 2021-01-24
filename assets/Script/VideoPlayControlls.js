@@ -6,8 +6,12 @@ cc.Class({
         playVideoArea: cc.Node,
     },
 
+    onLoad() {
+        this.videoPlayer.parent = this.videoParent;
+    },
+
     start () {
-        this.videoPlayer.play();
+        this.playVideoArea.on(cc.Node.EventType.TOUCH_END, this.switchPlayPause, this);
     },
 
     onVideoPlayerEvent (sender, event) {
@@ -33,6 +37,18 @@ cc.Class({
         this.videoPlayer.isFullscreen = true;
     },
 
+    switchPlayPause (){
+        if (this.videoPlayer.isPlaying()) {
+            this.videoPlayer.pause();
+            this.playVideoArea.opacity = 255;
+            console.log("pause");
+        } else {
+            this.videoPlayer.play();
+            this.playVideoArea.opacity = 0;
+            console.log("play");
+        }
+    },
+
     play () {
         this.videoPlayer.play();
         this.playVideoArea.active = false;
@@ -40,6 +56,7 @@ cc.Class({
 
     pause () {
         this.videoPlayer.pause();
+        this.playVideoArea.active = true;
     },
 
     skip(){
