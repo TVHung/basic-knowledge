@@ -21,7 +21,7 @@ cc.Class({
     },
 
     onLoad () {
-
+        
     },
 
     start () {
@@ -32,8 +32,16 @@ cc.Class({
         this.node.getComponent("SoundManager").playSoundAnswer(this.nameImage, false);   
     },
 
-    onClickRecord(){
+    onClickStartRecord(){
+    
+    },
 
+    onClickStopRecord(){
+
+    },
+
+    onClickPlayRecord(){
+        
     },
 
     update (dt) {},

@@ -9,113 +9,147 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        objectChoice: {
+        clickSound:{
             default: null,
-            type: cc.Prefab
-        },   
-        arrObjectPrefab: {
-            default: [],
-            type: cc.Prefab
+            type: cc.AudioClip
         },
         result: {
             default: null,
             type: cc.Button
+        },
+        imgParent: {
+            default: [],
+            type: cc.Node
+        },
+        radioButton: {
+            default: [],
+            type: cc.Toggle
         },
         character: {
             default: null,
             type: cc.Node
         },
         _index: 0,  
-        trueResult: "", 
+        trueResult: 0, 
+        _choice: 1,
+        _ischoiced: false,
+        questionName: "",
     },
 
     onLoad () {
+        this._choice = 1;
         setTimeout(() => {
-            this.spawnNewProduct(-200, 200);
-            this.spawnNewProduct(-200, 50);
-            this.spawnNewProduct(-200, -100);
-            this.spawnNewProduct(200, 200);
-            this.spawnNewProduct(200, 50);
-            this.spawnNewProduct(200, -100);
-            cc.find("Canvas/MultipleChoiceGame/btnResult").active = true;
-        }, 2500);
-        arrResult = new Array();
-        var i = 0;
-        while(this.trueResult.split(" ")[i] != null){
-            arrResult[i] = this.trueResult.split(" ")[i];
-            i++;
-        }
-
-        this.character.getComponent(cc.Animation).play('monsterIn');
-        cc.find("Canvas/Character/Mess").getComponent(cc.Label).string = 'Con hãy chọn đáp\nán đúng!';
-        this.node.getComponent("SoundManager").playQuestion("cauhoi", false);   
+            this.character.getComponent(cc.Animation).play('monsterIn');
+            cc.find("Canvas/Character/Mess").getComponent(cc.Label).string = 'Con hãy chọn đáp\nán đúng!';
+            this.node.getComponent("SoundManager").playQuestion("cauhoi", false);
+        }, 1000);   
         setTimeout(() => {
             this.character.getComponent(cc.Animation).play('monsterOut');
-        }, 2500);
+        }, 3500);
+
+        this.questionName = "question1";
+        arrNameImage = new Array();
+        cc.loader.loadRes('GameBasicKnowledge/QuestionData.json', function (err, object) {             //get data from json file
+            if (err) {
+                console.log(err);
+                return;
+            }
+            this.arrNameImage = object.json.questions[this.questionName].nameImage;  
+            this.trueResult = object.json.questions[this.questionName].result;
+            this.setImage();
+        }.bind(this));
     },
 
     start () {
 
     },
 
-    spawnNewProduct(x, y) {
-        var newBox = cc.instantiate(this.objectChoice);
-        newBox._tag = this._index + 1;
-        newBox.setPosition(x, y);
+    setImage(){
+        console.log(this.arrNameImage);
+        var imageParent = this.imgParent;
+        for(let i = 0; i < 4; i++){
+            var nameImg = this.arrNameImage[i];
+            console.log(nameImg);
+            cc.loader.loadRes('GameBasicKnowledge/ImageQuestion/' + nameImg, cc.SpriteFrame, function (err, spriteFrame) {
+                if (err) {
+                    cc.error(err.message || err);
+                    return;
+                }else{
+                    imageParent[i].getComponent(cc.Sprite).spriteFrame = spriteFrame;
+                }
+            });
+        }
+    },
 
-        var nameImage = "so_" + newBox._tag;
-        cc.loader.loadRes('MatchingShape/' + nameImage, cc.SpriteFrame, function (err, spriteFrame) {
-            if (err) {
-                cc.error(err.message || err);
-                return;
-            }else{
-                newBox.getComponent(cc.Sprite).spriteFrame = spriteFrame;
-            }
-        });
-
-        this.node.addChild(newBox);
-        this.arrObjectPrefab[this._index] = newBox;
-        this._index++;
+    radioButtonClicked(toggle) {
+        cc.audioEngine.play(this.clickSound, false, 1);
+        var index = this.radioButton.indexOf(toggle);
+        var title = "RadioButton";
+        switch(index) {
+            case 0:
+                title += "1";
+                if(this.radioButton[0].checkMark.node.active === true){
+                    this._choice = 1;
+                }else{
+                    this._choice = 0;
+                }
+                break;
+            case 1:
+                title += "2";
+                if(this.radioButton[1].checkMark.node.active === true){
+                    this._choice = 2;
+                }else{
+                    this._choice = 0;
+                }
+                break;
+            case 2:
+                title += "3";
+                if(this.radioButton[2].checkMark.node.active === true){
+                    this._choice = 3;
+                }else{
+                    this._choice = 0;
+                }
+                break;
+            case 3:
+                title += "4";
+                if(this.radioButton[3].checkMark.node.active === true){
+                    this._choice = 4;
+                }else{
+                    this._choice = 0;
+                }
+                break;
+            default:
+                break;
+        }
+        console.log(this._choice);
+        console.log(title);
     },
 
     onClickRetultButton(){
-        var isCorrect = true;
-        var arrChoice = new Array();
-        var j = 0;
-        for(var i = 0; i < 6; i++){
-            if(this.arrObjectPrefab[i].getComponent('ObjectChoice')._isTouch === true){
-                arrChoice[j] = "" + (i+1);
-                j++;
+        if(this._ischoiced === false){
+            let isCorrect = false;
+            console.log(this._choice);
+            console.log(this.trueResult);
+            if(this._choice === this.trueResult){
+                isCorrect = true;
             }
-        }
-        //compare 2 arr
-        if(arrChoice.length != arrResult.length){
-            isCorrect = false;
-        }else{
-            for (let i = 0; i < arrResult.length; i++) {
-                if (arrResult[i] !== arrChoice[i]) {
-                    isCorrect = false
-                    break;
-                }
+            if(isCorrect === true){
+                this.character.getComponent(cc.Animation).play('monsterIn');
+                cc.find("Canvas/Character/Mess").getComponent(cc.Label).string = 'Chúc mừng con đã\ntrả lời đúng';
+                this.node.getComponent("SoundManager").playEffectSound("traloidung", false);   
+                setTimeout(() => {
+                    this.character.getComponent(cc.Animation).play('monsterOut');
+                }, 2500);
+            }else{
+                this.character.getComponent(cc.Animation).play('monsterIn');
+                cc.find("Canvas/Character/Mess").getComponent(cc.Label).string = 'Con cần cố gắng\nhơn nữa';
+                this.node.getComponent("SoundManager").playEffectSound("traloisai", false);   
+                setTimeout(() => {
+                    this.character.getComponent(cc.Animation).play('monsterOut');
+                }, 2500);
             }
+            this._ischoiced = true;
         }
-
-        if(isCorrect === true){
-            this.character.getComponent(cc.Animation).play('monsterIn');
-            cc.find("Canvas/Character/Mess").getComponent(cc.Label).string = 'Chúc mừng con đã\ntrả lời đúng';
-            this.node.getComponent("SoundManager").playEffectSound("traloidung", false);   
-            setTimeout(() => {
-                this.character.getComponent(cc.Animation).play('monsterOut');
-            }, 2500);
-        }else{
-            this.character.getComponent(cc.Animation).play('monsterIn');
-            cc.find("Canvas/Character/Mess").getComponent(cc.Label).string = 'Con cần cố gắng\nhơn nữa';
-            this.node.getComponent("SoundManager").playEffectSound("traloisai", false);   
-            setTimeout(() => {
-                this.character.getComponent(cc.Animation).play('monsterOut');
-            }, 2500);
-        }
-        
     },
 
     update (dt) {},

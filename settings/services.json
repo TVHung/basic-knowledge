@@ -1,6 +1,24 @@
 {
 	"game": {
-		"name": "UNKNOW GAME",
-		"appid": "UNKNOW"
-	}
+		"name": "GameBasicKnowledge",
+		"appid": "614863140",
+		"cid": "0"
+	},
+	"configs": [
+		{
+			"appid": "614863140",
+			"services": [
+				{
+					"service_id": "242",
+					"enable": true,
+					"params": {
+						"sdkType": "audio",
+						"isEncrypt": false,
+						"plugin_version": "1.3.1_3.1"
+					}
+				}
+			]
+		}
+	],
+	"needExecNative": true
 }
