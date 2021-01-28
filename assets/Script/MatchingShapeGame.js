@@ -36,21 +36,25 @@ cc.Class({
         _index: 0,   
         matchingNameGame: "question1",          //ten bai hoc
         amountNode: 6,                          //số lượng node 
-        _isConnecting: false,                    //trang thai co dang noi hay khong
+        _isConnecting: false,                   //trang thai co dang noi hay khong
 
         _connet1: -1,                        //trang thai ket noi cua button 1 
         _connet2: -1,
         _connet3: -1,
         _connet4: -1,
         _connet5: -1,
-        _connet6: -1,      
+        _connet6: -1,   
+        _isNumberPairNode: 0,                   //so cap node da noi   
     },
     onLoad () {
         // cc.director.getCollisionManager().enabled = true;
         // cc.director.getCollisionManager().enabledDebugDraw = true;
-        window.amountNodeIsTouched = 0;
-        window.amount = this.amountNode;
-        aresult = new Array(1, 2, 3, 0, 0, 0);
+        window.nodeCurrentTouch = 0;                                //node đang được chạm hiện tại (1-6), 0 la dang khong cham
+        window.nodeConnectCurrent = 0;                              //node dang duoc noi den, neu khong thi gia tri bang 0
+        window.arrChoice = new Array();                             //mang chua ket qua da noi
+        window.arrChoice = [0, 0, 0, 0, 0, 0];                      //khoi tao gia tri mac dinh
+
+        aresult = new Array(1, 2, 3, 0, 0, 0);                      //mang chua ket qua chon, ban cu
 
         this.matchingNameGame = "question1";
         arrNameImage = new Array();
@@ -91,93 +95,119 @@ cc.Class({
     },
 
     onTouchPoint(){
-        this.pointParent[0].on(cc.Node.EventType.TOUCH_START, function (touch, event) {
-            this._connet1 = 0;
-            this.DrawLine(0);
-        }, this);
-        this.pointParent[1].on(cc.Node.EventType.TOUCH_START, function (touch, event) {
-            this._connet2 = 0;
-            this.DrawLine(1);
-        }, this);
-        this.pointParent[2].on(cc.Node.EventType.TOUCH_START, function (touch, event) {
-            this._connet3 = 0;
-            this.DrawLine(2);
-        }, this);
-        this.pointParent[3].on(cc.Node.EventType.TOUCH_START, function (touch, event) {
-            this._connet4 = 0;
-            this.DrawLine(3);
-        }, this);
-        this.pointParent[4].on(cc.Node.EventType.TOUCH_START, function (touch, event) {
-            this._connet5 = 0;
-            this.DrawLine(4);
-        }, this);
-        this.pointParent[5].on(cc.Node.EventType.TOUCH_START, function (touch, event) {
-            this._connet6 = 0;
-            this.DrawLine(5);
-        }, this);
-
-        this.pointParent[0].on(cc.Node.EventType.TOUCH_END, function (touch, event) {
-            console.log("noi 1");
-        }, this);
-        this.pointParent[1].on(cc.Node.EventType.TOUCH_END, function (touch, event) {
-            console.log("noi 2");
-        }, this);
-        this.pointParent[2].on(cc.Node.EventType.TOUCH_END, function (touch, event) {
-            console.log("noi 3");
-        }, this);
-        this.pointParent[3].on(cc.Node.EventType.TOUCH_END, function (touch, event) {
-            console.log("noi 4");
-        }, this);
-        this.pointParent[4].on(cc.Node.EventType.TOUCH_END, function (touch, event) {
-            console.log("noi 5");
-        }, this);
-        this.pointParent[5].on(cc.Node.EventType.TOUCH_END, function (touch, event) {
-            console.log("noi 6");
-        }, this);
-
+        for(var i = 0; i < 6; i++){
+            this.DrawLine(i);
+            this.onTouchConnect(i);
+        }
     },
 
-    DrawLine(index){
-        window.posX = this.pointParent[index].x;
-        window.posY = this.pointParent[index].y;
-        cc.audioEngine.play(this.clickSound, false, 1);
-        this.arrLine[index] = this.spawnNewLine(this.pointParent[index].x, this.pointParent[index].y);
-        // this.arrLine[0].getComponent("LineTo").calculateTheLengthAndAngle(this.pointParent[0].x, this.pointParent[0].y);
+    DrawLine(index){                                    //xử lý khi nhấn vào 1 node và bắt đầu kéo vẽ
+        this.pointParent[index].on(cc.Node.EventType.TOUCH_START, function (touch, event) {
+            window.posX = this.pointParent[index].x;
+            window.posY = this.pointParent[index].y;
+            cc.audioEngine.play(this.clickSound, false, 1);
+            this.handlePairNode(index);
+            this.handleDeleteWhenClickAgain(index);
+            this.arrLine[index] = this.spawnNewLine(this.pointParent[index].x, this.pointParent[index].y);       
+        }, this);  
+        
+    },
+
+    handlePairNode(index){                                       //xu ly cac cap node da duoc noi voi nhau
+        window.nodeCurrentTouch = index + 1;
+    },
+
+    onTouchConnect(index){                             //xử lý khi chạm đến điểm nối thứ 2
+        this.pointParent[index].on(cc.Node.EventType.MOUSE_ENTER, function (touch, event) {
+            if(window.nodeCurrentTouch > 0){           //neu da cham node
+                cc.audioEngine.play(this.clickSound, false, 1);
+                window.nodeConnectCurrent = index + 1;  
+                this.handleDeleteWhenConnectNodeConnected(index);
+            }else{                                      //neu chua cham node
+                window.nodeConnectCurrent = 0;
+            }
+        }, this);
+        //xử lý khi node đã được nối thì không nối được nữa
+    },
+
+    handleDeleteWhenClickAgain(index){                           //xử lý xóa kết nối khi nhấn lại vào nút đã kết nối
+        //trường hợp chạm vào node ban đầu
+        if(!cc.isValid(this.arrLine[index])){                      //chưa tồn tại thì kiểm tra đã được nối chưa
+            //trường hợp chạm vào node được kết nối đến nên chưa tồn tại đường vẽ
+            if(window.arrChoice[index] > 0){
+                var indexConnect = window.arrChoice[index] - 1;
+                if(cc.isValid(this.arrLine[indexConnect]) === true){  
+                    this.arrLine[indexConnect].getComponent("LineTo").onDestroy();      // xoa tai vi tri duoc noi den
+                }
+                window.arrChoice[index] = 0;
+                window.arrChoice[indexConnect] = 0;
+            }
+        }else{
+            if(cc.isValid(this.arrLine[index]) === true){                       
+                this.arrLine[index].getComponent("LineTo").onDestroy();                 //xoa tai vi tri da noi ban dau
+            }
+            var indexConnect = window.arrChoice[index] - 1;
+            window.arrChoice[index] = 0;
+            window.arrChoice[indexConnect] = 0;
+            console.log(window.arrChoice);
+        }
+    },
+
+    handleDeleteWhenConnectNodeConnected(index){                                         //kiem tra khi noi den node da noi va xoa duong noi kia
+        var indexConnect = window.arrChoice[index] - 1;
+        console.log(indexConnect);
+        console.log(window.nodeConnectCurrent);
+        if(indexConnect >= 0){                                                          //neu ma node duoc noi toi da co ket noi
+            if(cc.isValid(this.arrLine[index]) === true){
+                console.log("xoa noi");                               //neu ket noi duoc noi la o node noi, thi xoa
+                this.arrLine[index].getComponent("LineTo").onDestroy();                 //xoa tai vi tri da noi 
+            }else if(cc.isValid(this.arrLine[indexConnect]) === true){   
+                console.log("xoa goc");                        //neu ket noi o node duoc noi, thi xoa
+                this.arrLine[indexConnect].getComponent("LineTo").onDestroy();                 //xoa tai vi tri da noi 
+            }
+            window.arrChoice[index] = 0;
+            window.arrChoice[indexConnect] = 0;
+        }
+        
+    },
+
+    onConnectToNodeConnected(index){                             //xu ly xoa node khi connect toi node da ket noi
+
     },
 
     onCLickAnswer(){
-        // this._arrChoice = "1 " + this._numberConnect1 + " 2 " + this._numberConnect2 + " 3 " + this._numberConnect3;
-        // console.log(this._arrChoice); 
+        this._arrChoice = "1 " + window.arrChoice[0] + " 2 " + window.arrChoice[1] + " 3 " + window.arrChoice[2];
+        console.log(this._arrChoice); 
         // this._onclickBtn5 = !this._onclickBtn5;
-        // var result = this.checkAnswer(this._arrChoice, this.arrResult);
-        // console.log("Ket qua: " + result);
+        var result = this.checkAnswer(this._arrChoice, this.arrResult);
+        console.log("Ket qua: " + result);
 
-        // this.character.getComponent(cc.Animation).play('monsterIn');
-        // if(result === true){
-        //     cc.find("Canvas/Character/Mess").getComponent(cc.Label).string = 'Con hãy chọn đáp\nán đúng!';
-        //     this.node.getComponent("SoundManager").playEffectSound("traloidung", false);   
-        // }else{
-        //     cc.find("Canvas/Character/Mess").getComponent(cc.Label).string = 'Con hãy chọn đáp\nán đúng!';
-        //     this.node.getComponent("SoundManager").playEffectSound("traloisai", false);   
-        // }
-        // setTimeout(() => {
-        //     this.character.getComponent(cc.Animation).play('monsterOut');
-        // }, 2500);
+        this.character.getComponent(cc.Animation).play('monsterIn');
+        if(result === true){
+            cc.find("Canvas/Character/Mess").getComponent(cc.Label).string = 'Con hãy chọn đáp\nán đúng!';
+            this.node.getComponent("SoundManager").playEffectSound("traloidung", false);   
+        }else{
+            cc.find("Canvas/Character/Mess").getComponent(cc.Label).string = 'Con hãy chọn đáp\nán đúng!';
+            this.node.getComponent("SoundManager").playEffectSound("traloisai", false);   
+        }
+        setTimeout(() => {
+            this.character.getComponent(cc.Animation).play('monsterOut');
+        }, 2500);
     },
     checkAnswer(arr1, arr2){
-        //compare 2 arr
-        // var isCorrect = true;
-        // if(arr1.length != arr2.length){
-        //     isCorrect = false;
-        // }else{
-        //     for (let i = 0; i < arr1.length; i++) {
-        //         if (arr1[i] !== arr2[i]) {
-        //             isCorrect = false
-        //             break;
-        //         }
-        //     }
-        // }
-        // return isCorrect;
+        // compare 2 arr
+        var isCorrect = true;
+        if(arr1.length != arr2.length){
+            isCorrect = false;
+        }else{
+            for (let i = 0; i < arr1.length; i++) {
+                if (arr1[i] !== arr2[i]) {
+                    isCorrect = false
+                    break;
+                }
+            }
+        }
+        return isCorrect;
     },
 
     update (dt) {
