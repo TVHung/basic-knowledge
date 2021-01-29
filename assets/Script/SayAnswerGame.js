@@ -16,8 +16,13 @@ cc.Class({
             default: null,
             type: cc.Button
         },
+        backgroundPhone: {                      //lay toa do phone
+            default: null,
+            type: cc.Node
+        },
         _index: 0,
         nameImage: "",
+        _zoom: false,                           //switch chuyen doi giua zoomin zoomout
     },
 
     onLoad () {
@@ -42,6 +47,19 @@ cc.Class({
 
     onClickPlayRecord(){
         
+    },
+
+    onClickZoom(){
+        this._zoom = !this._zoom;
+        var camera = cc.find("Canvas/Main Camera");
+        if(this._zoom === true){
+            camera.setPosition(this.backgroundPhone.getPosition().x, this.backgroundPhone.getPosition().y);                                    //set vi tri moi
+            camera._components[0]._zoomRatio = 1.5                      //set do zoom
+        }else{
+            //tra la nhu ban dau
+            camera.setPosition(0, 0);                                    //set vi tri moi
+            camera._components[0]._zoomRatio = 1                      //set do zoom
+        }
     },
 
     update (dt) {},
