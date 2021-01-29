@@ -30,6 +30,10 @@ cc.Class({
             default: null,
             type: cc.Node
         },
+        backgroundPhone: {                      //lay toa do phone
+            default: null,
+            type: cc.Node
+        },
 
         arrResult: "1 4 2 6 3 5",
         _arrChoice: "",
@@ -37,18 +41,13 @@ cc.Class({
         matchingNameGame: "question1",          //ten bai hoc
         amountNode: 6,                          //số lượng node 
         _isConnecting: false,                   //trang thai co dang noi hay khong
+        _zoom: false,                           //switch chuyen doi giua zoomin zoomout
 
-        _connet1: -1,                        //trang thai ket noi cua button 1 
-        _connet2: -1,
-        _connet3: -1,
-        _connet4: -1,
-        _connet5: -1,
-        _connet6: -1,   
-        _isNumberPairNode: 0,                   //so cap node da noi   
     },
     onLoad () {
         // cc.director.getCollisionManager().enabled = true;
         // cc.director.getCollisionManager().enabledDebugDraw = true;
+        window.zoom = false;
         window.nodeCurrentTouch = 0;                                //node đang được chạm hiện tại (1-6), 0 la dang khong cham
         window.nodeConnectCurrent = 0;                              //node dang duoc noi den, neu khong thi gia tri bang 0
         window.arrChoice = new Array();                             //mang chua ket qua da noi
@@ -69,6 +68,8 @@ cc.Class({
             }
         }.bind(this));
         this.onTouchPoint();
+
+        console.log(this.backgroundPhone.getPosition().x);
     },
 
     setImage(){
@@ -154,25 +155,22 @@ cc.Class({
     },
 
     handleDeleteWhenConnectNodeConnected(index){                                         //kiem tra khi noi den node da noi va xoa duong noi kia
-        var indexConnect = window.arrChoice[index] - 1;
+        var indexConnect = window.arrChoice[index] - 1;                                 //vi tri node goc
         console.log(indexConnect);
         console.log(window.nodeConnectCurrent);
-        if(indexConnect >= 0){                                                          //neu ma node duoc noi toi da co ket noi
-            if(cc.isValid(this.arrLine[index]) === true){
-                console.log("xoa noi");                               //neu ket noi duoc noi la o node noi, thi xoa
-                this.arrLine[index].getComponent("LineTo").onDestroy();                 //xoa tai vi tri da noi 
-            }else if(cc.isValid(this.arrLine[indexConnect]) === true){   
-                console.log("xoa goc");                        //neu ket noi o node duoc noi, thi xoa
-                this.arrLine[indexConnect].getComponent("LineTo").onDestroy();                 //xoa tai vi tri da noi 
+        if((window.nodeCurrentTouch <= 3 && index >= 3 ) || (window.nodeCurrentTouch > 3 && index < 3 )){ //kiem tra vi tri noi den khong duoc cung ben voi node noi
+            if(indexConnect >= 0){                                                          //neu ma node duoc noi toi da co ket noi
+                if(cc.isValid(this.arrLine[index]) === true){
+                    console.log("xoa noi");                                                 //neu ket noi duoc noi la o node noi, thi xoa
+                    this.arrLine[index].getComponent("LineTo").onDestroy();                 //xoa tai vi tri da noi 
+                }else if(cc.isValid(this.arrLine[indexConnect]) === true){   
+                    console.log("xoa goc");                                                 //neu ket noi o node duoc noi, thi xoa
+                    this.arrLine[indexConnect].getComponent("LineTo").onDestroy();                 //xoa tai vi tri da noi 
+                }
+                window.arrChoice[index] = 0;
+                window.arrChoice[indexConnect] = 0;
             }
-            window.arrChoice[index] = 0;
-            window.arrChoice[indexConnect] = 0;
-        }
-        
-    },
-
-    onConnectToNodeConnected(index){                             //xu ly xoa node khi connect toi node da ket noi
-
+        }                                                    
     },
 
     onCLickAnswer(){
@@ -184,7 +182,7 @@ cc.Class({
 
         this.character.getComponent(cc.Animation).play('monsterIn');
         if(result === true){
-            cc.find("Canvas/Character/Mess").getComponent(cc.Label).string = 'Con hãy chọn đáp\nán đúng!';
+            cc.find("Canvas/Character/Mess").getComponent(cc.Label).string = 'Chúc mừng con đã\nchọn đúng!';
             this.node.getComponent("SoundManager").playEffectSound("traloidung", false);   
         }else{
             cc.find("Canvas/Character/Mess").getComponent(cc.Label).string = 'Con hãy chọn đáp\nán đúng!';
@@ -208,6 +206,21 @@ cc.Class({
             }
         }
         return isCorrect;
+    },
+
+    onClickZoom(){
+        this._zoom = !this._zoom;
+        window.zoom = this._zoom;
+        
+        var camera = cc.find("Canvas/Main Camera");
+        if(this._zoom === true){
+            camera.setPosition(this.backgroundPhone.getPosition().x, this.backgroundPhone.getPosition().y);                                    //set vi tri moi
+            camera._components[0]._zoomRatio = 1.5                      //set do zoom
+        }else{
+            //tra la nhu ban dau
+            camera.setPosition(0, 0);                                    //set vi tri moi
+            camera._components[0]._zoomRatio = 1                      //set do zoom
+        }
     },
 
     update (dt) {

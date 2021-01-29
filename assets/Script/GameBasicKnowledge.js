@@ -24,8 +24,8 @@ cc.Class({
     },
 
     hideShowGame(){
-        if(this._level === 1){
-            let time = 0;           
+        let time = 1000;
+        if(this._level === 1){           
             if(this._onClickNextOrBack === false){
                 cc.find("Canvas/PlayVideoTutorial").getComponent(cc.Animation).play('sauLenGiua');
                 cc.find("Canvas/MatchingShapeGame").getComponent(cc.Animation).play('giuaLenTruoc');
@@ -53,7 +53,7 @@ cc.Class({
             
                 cc.find("Canvas/SayAnswerGame").active = false;
                 cc.find("Canvas/MultipleChoiceGame").active = false;
-            }, 1000);
+            }, time);
             
         }else if(this._level === 3){
             if(this._onClickNextOrBack === false){
@@ -69,7 +69,7 @@ cc.Class({
                 cc.find("Canvas/MatchingShapeGame").active = false;
 
                 cc.find("Canvas/MultipleChoiceGame").active = false;
-            }, 1000);
+            }, time);
             
         }else{
             if(this._onClickNextOrBack === true){
@@ -82,7 +82,7 @@ cc.Class({
                 cc.find("Canvas/MatchingShapeGame").active = false;
                 cc.find("Canvas/SayAnswerGame").active = false;
             
-            }, 1000);
+            }, time);
         }
         //hide and show button
         if(this._level === 4){
