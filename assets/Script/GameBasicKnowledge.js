@@ -17,6 +17,7 @@ cc.Class({
         window.height = 720;
         window.posX = 0;
         window.posY = 0;
+        this._level = 1;
         // cc.director.getCollisionManager().enabledDebugDraw = true;
         cc.debug.setDisplayStats(false);
         this.initEventListener();
@@ -25,12 +26,7 @@ cc.Class({
 
     hideShowGame(){
         let time = 1000;
-        if(this._level === 1){           
-            if(this._onClickNextOrBack === false){
-                cc.find("Canvas/PlayVideoTutorial").getComponent(cc.Animation).play('sauLenGiua');
-                cc.find("Canvas/MatchingShapeGame").getComponent(cc.Animation).play('giuaLenTruoc');
-                time = 1000;
-            }
+        if(this._level === 1){   
             cc.find("Canvas/PlayVideoTutorial").active = true;
             setTimeout(() => {
                 
@@ -38,15 +34,14 @@ cc.Class({
                 cc.find("Canvas/SayAnswerGame").active = false;
                 cc.find("Canvas/MultipleChoiceGame").active = false;
             }, time);
+            
+            if(this._onClickNextOrBack === false){                              //neu click back tu game truoc
+                cc.find("Canvas/PlayVideoTutorial").getComponent(cc.Animation).play('sauLenGiua');
+                cc.find("Canvas/MatchingShapeGame").getComponent(cc.Animation).play('giuaLenTruoc');
+                time = 1000;
+            }
 
         }else if(this._level === 2){
-            if(this._onClickNextOrBack === false){
-                cc.find("Canvas/MatchingShapeGame").getComponent(cc.Animation).play('sauLenGiua');
-                cc.find("Canvas/SayAnswerGame").getComponent(cc.Animation).play('giuaLenTruoc');
-            }else{
-                cc.find("Canvas/PlayVideoTutorial").getComponent(cc.Animation).play('giuaVeSau');
-                cc.find("Canvas/MatchingShapeGame").getComponent(cc.Animation).play('truocVeGiua');
-            }
             cc.find("Canvas/MatchingShapeGame").active = true;
             setTimeout(() => {
                 cc.find("Canvas/PlayVideoTutorial").active = false;
@@ -54,15 +49,16 @@ cc.Class({
                 cc.find("Canvas/SayAnswerGame").active = false;
                 cc.find("Canvas/MultipleChoiceGame").active = false;
             }, time);
-            
-        }else if(this._level === 3){
-            if(this._onClickNextOrBack === false){
-                cc.find("Canvas/SayAnswerGame").getComponent(cc.Animation).play('sauLenGiua');
-                cc.find("Canvas/MultipleChoiceGame").getComponent(cc.Animation).play('giuaLenTruoc');
-            }else{
-                cc.find("Canvas/MatchingShapeGame").getComponent(cc.Animation).play('giuaVeSau');
-                cc.find("Canvas/SayAnswerGame").getComponent(cc.Animation).play('truocVeGiua');
+
+            if(this._onClickNextOrBack === false){                              //neu back tu game truoc
+                cc.find("Canvas/MatchingShapeGame").getComponent(cc.Animation).play('sauLenGiua');
+                cc.find("Canvas/SayAnswerGame").getComponent(cc.Animation).play('giuaLenTruoc');
+            }else{                                                              //neu next game tiep theo
+                cc.find("Canvas/PlayVideoTutorial").getComponent(cc.Animation).play('giuaVeSau');
+                cc.find("Canvas/MatchingShapeGame").getComponent(cc.Animation).play('truocVeGiua');
             }
+
+        }else if(this._level === 3){
             cc.find("Canvas/SayAnswerGame").active = true;
             setTimeout(() => {
                 cc.find("Canvas/PlayVideoTutorial").active = false;
@@ -70,12 +66,15 @@ cc.Class({
 
                 cc.find("Canvas/MultipleChoiceGame").active = false;
             }, time);
-            
-        }else{
-            if(this._onClickNextOrBack === true){
-                cc.find("Canvas/SayAnswerGame").getComponent(cc.Animation).play('giuaVeSau');
-                cc.find("Canvas/MultipleChoiceGame").getComponent(cc.Animation).play('truocVeGiua');
+
+            if(this._onClickNextOrBack === false){                               //neu back tu game truoc
+                cc.find("Canvas/SayAnswerGame").getComponent(cc.Animation).play('sauLenGiua');
+                cc.find("Canvas/MultipleChoiceGame").getComponent(cc.Animation).play('giuaLenTruoc');
+            }else{                                                              //neu next game tiep theo
+                cc.find("Canvas/MatchingShapeGame").getComponent(cc.Animation).play('giuaVeSau');
+                cc.find("Canvas/SayAnswerGame").getComponent(cc.Animation).play('truocVeGiua');
             }
+        }else{
             cc.find("Canvas/MultipleChoiceGame").active = true;
             setTimeout(() => {
                 cc.find("Canvas/PlayVideoTutorial").active = false;
@@ -83,21 +82,49 @@ cc.Class({
                 cc.find("Canvas/SayAnswerGame").active = false;
             
             }, time);
-        }
-        //hide and show button
-        if(this._level === 4){
-            cc.find("Canvas/NextGame").active = false;
-        }else{
-            cc.find("Canvas/NextGame").active = true;
-        }
-        if(this._level === 1){
-            cc.find("Canvas/PreGame").active = false;
-        }else{
-            cc.find("Canvas/PreGame").active = true;
+
+            if(this._onClickNextOrBack === true){                               //neu back ve game truoc
+                cc.find("Canvas/SayAnswerGame").getComponent(cc.Animation).play('giuaVeSau');
+                cc.find("Canvas/MultipleChoiceGame").getComponent(cc.Animation).play('truocVeGiua');
+            }
         }
     },
 
-    initEventListener() {  
+    handleChangeGame(time, level, ani1, ani2, ani3, ani4){                     //xu ly chuyen man hinh game
+        if(this._onClickNextOrBack === false){
+            cc.find("Canvas/PlayVideoTutorial").getComponent(cc.Animation).play(ani1);
+            cc.find("Canvas/MatchingShapeGame").getComponent(cc.Animation).play(ani2);
+        }else{
+            cc.find("Canvas/SayAnswerGame").getComponent(cc.Animation).play(ani3);
+            cc.find("Canvas/MultipleChoiceGame").getComponent(cc.Animation).play(ani4);
+        }
+        if(level === 1){
+            cc.find("Canvas/PlayVideoTutorial").active = true;
+        }else if(level === 2){
+            cc.find("Canvas/MatchingShapeGame").active = true;
+        }else if(level === 3){
+            cc.find("Canvas/SayAnswerGame").active = true;
+        }else{
+            cc.find("Canvas/MultipleChoiceGame").active = true;
+        }
+            
+        setTimeout(() => {
+            if(level != 1){
+                cc.find("Canvas/PlayVideoTutorial").active = false;
+            }
+            if(level != 2){
+                cc.find("Canvas/MatchingShapeGame").active = false;
+            }
+            if(level != 3){
+                cc.find("Canvas/SayAnswerGame").active = false;
+            }
+            if(level != 4){
+                cc.find("Canvas/MultipleChoiceGame").active = false;
+            }
+        }, time);
+    },
+
+    initEventListener() {                               //lay toa do theo thoi gian thuc
         this.node.on(cc.Node.EventType.TOUCH_START, (event)=>{  
 
         },this);
@@ -115,15 +142,19 @@ cc.Class({
     },
 
     onClickNextLevel(){
-        this._level++;
-        this._onClickNextOrBack = true;
-        this.hideShowGame(); 
+        if(this._level < 4){
+            this._level++;
+            this._onClickNextOrBack = true;
+            this.hideShowGame(); 
+        }
     },
 
     onClickPreLevel(){
-        this._level--;
-        this._onClickNextOrBack = false;
-        this.hideShowGame();
+        if(this._level > 1){
+            this._level--;
+            this._onClickNextOrBack = false;
+            this.hideShowGame();
+        }
     },
 
     onClickBack(){
