@@ -116,8 +116,14 @@
       "__id__": 1
     },
     "_enabled": true,
-    "pointParent": [],
+    "clickSound": {
+      "__uuid__": "ac7ff4fe-1071-4c89-a674-0d59753dca92"
+    },
+    "_deleteCheck": 0,
     "_isDraw": false,
+    "_chieuX": 0,
+    "_chieuY": 0,
+    "_chuvi": 20,
     "_id": ""
   },
   {

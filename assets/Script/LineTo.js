@@ -19,7 +19,9 @@ cc.Class({
     },
 
     calculateTheLengthAndAngle(x, y){
-        
+        // if(window.zoom === true){
+            
+        // }
         this.chieuX = Math.abs(window.posX - x);                //x, y la vi tri node duoc cham vao
         this.chieuY = Math.abs(window.posY - y);
         //xu ly khi cham vao node hay chua chạm
@@ -28,10 +30,7 @@ cc.Class({
         var khoangCach = Math.sqrt((this.chieuX * this.chieuX) + (this.chieuY * this.chieuY));      //khoang cach
         var theta = Math.atan2(this.chieuY, this.chieuX) * 180 / Math.PI;                           //goc
 
-        // if(window.zoom === true){
-        //     theta = theta/1.5;
-        //     khoangCach = khoangCach/1.5;
-        // }
+        
         //xu ly cac goc khac nhau
         if(window.posX < x && window.posY >= y){
             let goccong = 90 - theta;
@@ -68,8 +67,10 @@ cc.Class({
                     }
                 }else{
                     if(x1 <= window.posX && window.posX <= x2 && y1 <= window.posY && window.posY <= y2){
+                        //xu ly neu den gan node
                         this.handleWhenTouchTrueNode(x, y);
                     }else{
+                        //neu cham mà van khong noi và noi den node khac
                         this.handleConnectMuilti();
                     }
                 }
@@ -77,15 +78,6 @@ cc.Class({
                 if(window.nodeConnectCurrent <= 3){
                     if(x1 <= window.posX && window.posX <= x2 && y1 <= window.posY && window.posY <= y2){
                         this.handleWhenTouchTrueNode(x, y);
-                        // //noi toi node dang cham
-                        // window.arrChoice[window.nodeCurrentTouch-1] = window.nodeConnectCurrent;
-                        // window.arrChoice[window.nodeConnectCurrent-1] = window.nodeCurrentTouch;
-
-                        // this.chieuX = Math.abs(arrPoint[window.nodeConnectCurrent-1].x - x);                //x, y la vi tri node duoc cham vao
-                        // this.chieuY = Math.abs(arrPoint[window.nodeConnectCurrent-1].y - y);
-
-                        // console.log(window.arrChoice[window.nodeConnectCurrent-1] + "->" + window.arrChoice[window.nodeCurrentTouch-1]);
-                        // console.log(window.arrChoice);
                     }else{
                         this.handleConnectMuilti();
                     }

@@ -46,7 +46,7 @@ cc.Class({
         this._choice = 1;
         setTimeout(() => {
             this.character.getComponent(cc.Animation).play('monsterIn');
-            cc.find("Canvas/Character/Mess").getComponent(cc.Label).string = 'Con hãy chọn đáp\nán đúng!';
+            cc.find("Canvas/MultipleChoiceGame/Character/Mess").getComponent(cc.Label).string = 'Con hãy chọn đáp\nán đúng!';
             this.node.getComponent("SoundManager").playQuestion("cauhoi", false);
         }, 1000);   
         setTimeout(() => {
@@ -141,14 +141,14 @@ cc.Class({
             }
             if(isCorrect === true){
                 this.character.getComponent(cc.Animation).play('monsterIn');
-                cc.find("Canvas/Character/Mess").getComponent(cc.Label).string = 'Chúc mừng con đã\ntrả lời đúng';
+                cc.find("Canvas/MultipleChoiceGame/Character/Mess").getComponent(cc.Label).string = 'Chúc mừng con đã\ntrả lời đúng';
                 this.node.getComponent("SoundManager").playEffectSound("traloidung", false);   
                 setTimeout(() => {
                     this.character.getComponent(cc.Animation).play('monsterOut');
                 }, 2500);
             }else{
                 this.character.getComponent(cc.Animation).play('monsterIn');
-                cc.find("Canvas/Character/Mess").getComponent(cc.Label).string = 'Con cần cố gắng\nhơn nữa';
+                cc.find("Canvas/MultipleChoiceGame/Character/Mess").getComponent(cc.Label).string = 'Con cần cố gắng\nhơn nữa';
                 this.node.getComponent("SoundManager").playEffectSound("traloisai", false);   
                 setTimeout(() => {
                     this.character.getComponent(cc.Animation).play('monsterOut');

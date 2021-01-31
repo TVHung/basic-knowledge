@@ -182,10 +182,10 @@ cc.Class({
 
         this.character.getComponent(cc.Animation).play('monsterIn');
         if(result === true){
-            cc.find("Canvas/Character/Mess").getComponent(cc.Label).string = 'Chúc mừng con đã\nchọn đúng!';
+            cc.find("Canvas/MatchingShapeGame/Character/Mess").getComponent(cc.Label).string = 'Chúc mừng con đã\nchọn đúng!';
             this.node.getComponent("SoundManager").playEffectSound("traloidung", false);   
         }else{
-            cc.find("Canvas/Character/Mess").getComponent(cc.Label).string = 'Con hãy chọn đáp\nán đúng!';
+            cc.find("Canvas/MatchingShapeGame/Character/Mess").getComponent(cc.Label).string = 'Con hãy chọn đáp\nán đúng!';
             this.node.getComponent("SoundManager").playEffectSound("traloisai", false);   
         }
         setTimeout(() => {
