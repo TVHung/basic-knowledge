@@ -15,13 +15,10 @@ cc.Class({
         this.node.angle = 0;
         this.node.width = 0;
         this._chuvi = 20;           
-        arrPoint = [{"x":-105, "y":125}, {"x":-105, "y":-30}, {"x":-105, "y":-185}, {"x":88, "y":125}, {"x":88, "y":-30}, {"x":88, "y":-185}];
+        // arrPoint = [{"x":-105, "y":125}, {"x":-105, "y":-30}, {"x":-105, "y":-185}, {"x":88, "y":125}, {"x":88, "y":-30}, {"x":88, "y":-185}];
     },
 
     calculateTheLengthAndAngle(x, y){
-        // if(window.zoom === true){
-            
-        // }
         this.chieuX = Math.abs(window.posX - x);                //x, y la vi tri node duoc cham vao
         this.chieuY = Math.abs(window.posY - y);
         //xu ly khi cham vao node hay chua chạm
@@ -43,21 +40,24 @@ cc.Class({
             let goccong = (theta + 90) * (-1);
             theta += goccong * 2;
         } 
+        if(window.zoom === true){               //thay doi chieu dai cua line
+            khoangCach = khoangCach/1.5;
+        }
         
         this.node.angle = theta;
         this.node.width = khoangCach;
         // console.log("Khoang cach: " + khoangCach + "Goc: " + theta);
-        console.log("X: " + window.posX + " Y: " + window.posY);
+        // console.log("X: " + window.posX + " Y: " + window.posY);
     },
 
     //truong hop keo den node 
     onTouchNode(x, y){ 
         if(window.nodeConnectCurrent > 0 && window.nodeCurrentTouch > 0){
             var index = window.nodeConnectCurrent - 1;
-            var x1 = arrPoint[index].x - this._chuvi;
-            var x2 = arrPoint[index].x + this._chuvi;
-            var y1 = arrPoint[index].y - this._chuvi;
-            var y2 = arrPoint[index].y + this._chuvi;                                    //nếu chạm vào node thì sẽ nối kiểu khác mà ko chạy theo tay nữa
+            var x1 = window.arrPoint[index].x - this._chuvi;
+            var x2 = window.arrPoint[index].x + this._chuvi;
+            var y1 = window.arrPoint[index].y - this._chuvi;
+            var y2 = window.arrPoint[index].y + this._chuvi;                                    //nếu chạm vào node thì sẽ nối kiểu khác mà ko chạy theo tay nữa
             if(window.nodeCurrentTouch <= 3){                                   //neu cham vao node <= 3 thi chi dc noi den node 4,5,6
                 if(window.nodeConnectCurrent <= 3){
                     if(x1 <= window.posX && window.posX <= x2 && y1 <= window.posY && window.posY <= y2){               //neu tay keo trong khoảng thì sẽ duoc coi là cham
@@ -109,8 +109,8 @@ cc.Class({
         window.arrChoice[window.nodeConnectCurrent-1] = window.nodeCurrentTouch;
 
         //cho duong keo den tam node
-        this.chieuX = Math.abs(arrPoint[window.nodeConnectCurrent-1].x - x);                //x, y la vi tri node duoc cham vao
-        this.chieuY = Math.abs(arrPoint[window.nodeConnectCurrent-1].y - y);                
+        this.chieuX = Math.abs(window.arrPoint[window.nodeConnectCurrent-1].x - x);                //x, y la vi tri node duoc cham vao
+        this.chieuY = Math.abs(window.arrPoint[window.nodeConnectCurrent-1].y - y);                
 
         // console.log(window.arrChoice[window.nodeConnectCurrent-1] + "->" + window.arrChoice[window.nodeCurrentTouch-1]);
         // console.log(window.arrChoice);
@@ -146,7 +146,14 @@ cc.Class({
     update (dt) {
         if(this._isDraw === true){
             this._deleteCheck = 0;
-            this.calculateTheLengthAndAngle(this.node.x, this.node.y);
+            if(window.zoom === false){
+                this.calculateTheLengthAndAngle(this.node.x, this.node.y);
+            }else{
+                var newPosX, newPosY;
+                newPosX = window.arrPointZoom[window.nodeCurrentTouch - 1].x;
+                newPosY = window.arrPointZoom[window.nodeCurrentTouch - 1].y;
+                this.calculateTheLengthAndAngle(newPosX, newPosY);
+            }
         }
     },
 });

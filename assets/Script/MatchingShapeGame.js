@@ -52,6 +52,9 @@ cc.Class({
         window.nodeConnectCurrent = 0;                              //node dang duoc noi den, neu khong thi gia tri bang 0
         window.arrChoice = new Array();                             //mang chua ket qua da noi
         window.arrChoice = [0, 0, 0, 0, 0, 0];                      //khoi tao gia tri mac dinh
+        window.arrPoint = [{"x":this.pointParent[0].x, "y":this.pointParent[0].y}, {"x":this.pointParent[1].x, "y":this.pointParent[1].y}, {"x":this.pointParent[2].x, "y":this.pointParent[2].y}, {"x":this.pointParent[3].x, "y":this.pointParent[3].y}, {"x":this.pointParent[4].x, "y":this.pointParent[4].y}, {"x":this.pointParent[5].x, "y":this.pointParent[5].y}];
+        window.arrPointZoom = [{"x":0, "y":0}, {"x":0, "y":0}, {"x":0, "y":0}, {"x":0, "y":0}, {"x":0, "y":0}, {"x":0, "y":0}];
+        this.caculatorNewPointWhenZoom();
 
         aresult = new Array(1, 2, 3, 0, 0, 0);                      //mang chua ket qua chon, ban cu
 
@@ -68,8 +71,6 @@ cc.Class({
             }
         }.bind(this));
         this.onTouchPoint();
-
-        console.log(this.backgroundPhone.getPosition().x);
     },
 
     setImage(){
@@ -109,7 +110,7 @@ cc.Class({
             cc.audioEngine.play(this.clickSound, false, 1);
             this.handlePairNode(index);
             this.handleDeleteWhenClickAgain(index);
-            this.arrLine[index] = this.spawnNewLine(this.pointParent[index].x, this.pointParent[index].y);       
+            this.arrLine[index] = this.spawnNewLine(this.pointParent[index].x, this.pointParent[index].y);   
         }, this);  
         
     },
@@ -133,6 +134,7 @@ cc.Class({
 
     handleDeleteWhenClickAgain(index){                           //xử lý xóa kết nối khi nhấn lại vào nút đã kết nối
         //trường hợp chạm vào node ban đầu
+        console.log(this.pointParent[index].x + ": " + this.pointParent[index].y);
         if(!cc.isValid(this.arrLine[index])){                      //chưa tồn tại thì kiểm tra đã được nối chưa
             //trường hợp chạm vào node được kết nối đến nên chưa tồn tại đường vẽ
             if(window.arrChoice[index] > 0){
@@ -215,12 +217,23 @@ cc.Class({
         var camera = cc.find("Canvas/Main Camera");
         if(this._zoom === true){
             camera.setPosition(this.backgroundPhone.getPosition().x, this.backgroundPhone.getPosition().y);                                    //set vi tri moi
-            camera._components[0]._zoomRatio = 1.5                      //set do zoom
+            camera._components[0]._zoomRatio = 1.5;                      //set do zoom
         }else{
             //tra la nhu ban dau
             camera.setPosition(0, 0);                                    //set vi tri moi
-            camera._components[0]._zoomRatio = 1                      //set do zoom
+            camera._components[0]._zoomRatio = 1;                      //set do zoom
         }
+    },
+
+    caculatorNewPointWhenZoom(){                            //tinh toa do moi cua 6 point khi zoom len
+        var newPosX, newPosY;                          
+        for(var i = 0; i < 6; i++){
+            newPosX = (this.pointParent[i].x - this.backgroundPhone.getPosition().x) * 1.5;                //cong thuc thay doi khi zoom
+            newPosY = (this.pointParent[i].y - this.backgroundPhone.getPosition().y) * 1.5;
+            window.arrPointZoom[i].x = newPosX;
+            window.arrPointZoom[i].y = newPosY;
+        }
+        console.log(window.arrPointZoom);
     },
 
     update (dt) {

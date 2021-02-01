@@ -13,8 +13,8 @@ cc.Class({
     },
 
     onLoad () {
-        window.width = 1280;
-        window.height = 720;
+        window.width = cc.view._designResolutionSize.width;
+        window.height = cc.view._designResolutionSize.height;
         window.posX = 0;
         window.posY = 0;
         this._level = 1;
@@ -22,6 +22,8 @@ cc.Class({
         cc.debug.setDisplayStats(false);
         this.initEventListener();
         this.hideShowGame();
+        // console.log(cc.find("Canvas"));
+        // console.log(cc.view._designResolutionSize.width);
     },
 
     hideShowGame(){
@@ -126,7 +128,10 @@ cc.Class({
 
     initEventListener() {                               //lay toa do theo thoi gian thuc
         this.node.on(cc.Node.EventType.TOUCH_START, (event)=>{  
-
+            let pos = event.getLocation();
+            pos.x = pos.x - cc.view._designResolutionSize.width/2;
+            pos.y = pos.y - cc.view._designResolutionSize.height/2;
+            console.log(pos.x + ": " + pos.y);
         },this);
 
         this.node.on(cc.Node.EventType.TOUCH_MOVE, (event)=>{  
