@@ -105,12 +105,17 @@ cc.Class({
 
     DrawLine(index){                                    //xử lý khi nhấn vào 1 node và bắt đầu kéo vẽ
         this.pointParent[index].on(cc.Node.EventType.TOUCH_START, function (touch, event) {
-            window.posX = this.pointParent[index].x;
-            window.posY = this.pointParent[index].y;
+            if(window.zoom === false){
+                window.posX = this.pointParent[index].x;
+                window.posY = this.pointParent[index].y;
+            }else{
+                window.posX = window.arrPointZoom[index].x;
+                window.posY = window.arrPointZoom[index].y;
+            }
             cc.audioEngine.play(this.clickSound, false, 1);
             this.handlePairNode(index);
             this.handleDeleteWhenClickAgain(index);
-            this.arrLine[index] = this.spawnNewLine(this.pointParent[index].x, this.pointParent[index].y);   
+            this.arrLine[index] = this.spawnNewLine(this.pointParent[index].x, this.pointParent[index].y); 
         }, this);  
         
     },
