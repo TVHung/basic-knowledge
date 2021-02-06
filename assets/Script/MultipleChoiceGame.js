@@ -162,10 +162,14 @@ cc.Class({
         this._zoom = !this._zoom;
         var camera = cc.find("Canvas/Main Camera");
         if(this._zoom === true){
+            cc.find("Canvas/MultipleChoiceGame/zoomInBtn").active = false;
+            cc.find("Canvas/MultipleChoiceGame/zoomOutBtn").active = true;
             camera.setPosition(this.backgroundPhone.getPosition().x, this.backgroundPhone.getPosition().y);                                    //set vi tri moi
             camera._components[0]._zoomRatio = 1.5;                      //set do zoom
         }else{
             //tra la nhu ban dau
+            cc.find("Canvas/MultipleChoiceGame/zoomInBtn").active = true;
+            cc.find("Canvas/MultipleChoiceGame/zoomOutBtn").active = false;
             camera.setPosition(0, 0);                                    //set vi tri moi
             camera._components[0]._zoomRatio = 1;                      //set do zoom
         }
